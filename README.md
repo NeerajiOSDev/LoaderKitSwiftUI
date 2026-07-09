@@ -89,7 +89,9 @@ Customize the simple loader color in SwiftUI:
 ```swift
 loader.show(
     type: .simpleLoader,
-    loaderColor: .blue
+    loaderColor: .blue,
+    size: .large,
+    backgroundOpacity: 0.25
 )
 ```
 
@@ -100,7 +102,9 @@ loader.show(
     type: .simpleLoaderWithMessage,
     message: "Loading data...",
     loaderColor: .blue,
-    messageColor: .gray
+    messageColor: .gray,
+    size: .medium,
+    backgroundOpacity: 0.35
 )
 ```
 
@@ -111,7 +115,9 @@ loader.show(
     type: .simpleLoaderWithMessage,
     message: "Loading data...",
     loaderUIColor: .systemBlue,
-    messageUIColor: .darkGray
+    messageUIColor: .darkGray,
+    size: .large,
+    backgroundOpacity: 0.35
 )
 ```
 
@@ -122,7 +128,21 @@ Available loader types:
 .simpleLoaderWithMessage
 ```
 
-The default overlay background is transparent, so the loader appears above the current screen without dimming or covering the UI with a card background.
+Available loader sizes:
+
+```swift
+.small
+.medium
+.large
+```
+
+By default, the loader blocks screen interaction while visible. Allow users to keep interacting with the screen behind the loader:
+
+```swift
+loader.show(allowsInteraction: true)
+```
+
+The overlay uses a black background with opacity. The default opacity is `0.25`; pass `backgroundOpacity` between `0` and `1` to adjust it.
 
 ## Xcode Previews
 

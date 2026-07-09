@@ -25,8 +25,11 @@ struct SimpleLoaderHostModifier: ViewModifier {
                     type: loader.selectedType,
                     message: loader.message,
                     loaderColor: loader.loaderColor,
-                    messageColor: loader.messageColor
+                    messageColor: loader.messageColor,
+                    size: loader.size,
+                    backgroundOpacity: loader.backgroundOpacity
                 )
+                .allowsHitTesting(!loader.allowsInteraction)
                 .transition(.opacity)
                 .zIndex(1)
             }

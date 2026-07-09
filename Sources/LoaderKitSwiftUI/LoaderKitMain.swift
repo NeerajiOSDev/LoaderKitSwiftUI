@@ -15,6 +15,14 @@ public enum LoaderType: Sendable {
     case simpleLoaderWithMessage
 }
 
+/// Size options supported by the default loader.
+@available(iOS, introduced: 18.0, message: "LoaderKitSwiftUI requires iOS 18 or later. Increase your app's minimum deployment target to iOS 18.")
+public enum LoaderSize: Sendable {
+    case small
+    case medium
+    case large
+}
+
 /// Controls loader selection, presentation, and styling.
 @available(iOS, introduced: 18.0, message: "LoaderKitSwiftUI requires iOS 18 or later. Increase your app's minimum deployment target to iOS 18.")
 @MainActor
@@ -26,6 +34,9 @@ public final class Loader: ObservableObject {
     @Published public private(set) var message: String?
     @Published public private(set) var loaderColor: Color = .primary
     @Published public private(set) var messageColor: Color = .primary
+    @Published public private(set) var size: LoaderSize = .medium
+    @Published public private(set) var backgroundOpacity = 0.25
+    @Published public private(set) var allowsInteraction = false
 
     private var swiftUIHostCount = 0
     private var uiKitPresenter: UIKitLoaderPresenter?
@@ -48,7 +59,10 @@ public final class Loader: ObservableObject {
         type: LoaderType = .simpleLoader,
         message: String? = nil,
         loaderColor: Color = .primary,
-        messageColor: Color = .primary
+        messageColor: Color = .primary,
+        size: LoaderSize = .medium,
+        backgroundOpacity: Double = 0.25,
+        allowsInteraction: Bool = false
     ) {
         let hasMessage = message?.isEmpty == false
         let resolvedType: LoaderType = hasMessage ? .simpleLoaderWithMessage : type
@@ -58,6 +72,9 @@ public final class Loader: ObservableObject {
             self.message = message
             self.loaderColor = loaderColor
             self.messageColor = messageColor
+            self.size = size
+            self.backgroundOpacity = Self.clampedOpacity(backgroundOpacity)
+            self.allowsInteraction = allowsInteraction
             isPresented = true
         }
 
@@ -73,13 +90,19 @@ public final class Loader: ObservableObject {
         type: LoaderType = .simpleLoader,
         message: String? = nil,
         loaderUIColor: UIColor,
-        messageUIColor: UIColor
+        messageUIColor: UIColor,
+        size: LoaderSize = .medium,
+        backgroundOpacity: Double = 0.25,
+        allowsInteraction: Bool = false
     ) {
         show(
             type: type,
             message: message,
             loaderColor: Color(loaderUIColor),
-            messageColor: Color(messageUIColor)
+            messageColor: Color(messageUIColor),
+            size: size,
+            backgroundOpacity: backgroundOpacity,
+            allowsInteraction: allowsInteraction
         )
     }
 
@@ -91,6 +114,9 @@ public final class Loader: ObservableObject {
             message = nil
             loaderColor = .primary
             messageColor = .primary
+            size = .medium
+            backgroundOpacity = 0.25
+            allowsInteraction = false
         }
 
         uiKitPresenter?.hide()
@@ -110,6 +136,10 @@ public final class Loader: ObservableObject {
         #if DEBUG
         print("LoaderKitSwiftUI: No loader host configured. For SwiftUI use .loaderHost(). For UIKit call loader.configure(windowScene:).")
         #endif
+    }
+
+    private static func clampedOpacity(_ opacity: Double) -> Double {
+        min(max(opacity, 0), 1)
     }
 }
 
