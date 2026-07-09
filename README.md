@@ -1,6 +1,6 @@
 # LoaderKitSwiftUI
 
-LoaderKitSwiftUI is a small package for showing and hiding a common loader overlay from anywhere in an iOS app. It supports SwiftUI apps and UIKit apps.
+LoaderKitSwiftUI is a lightweight iOS loader package for SwiftUI and UIKit apps. Add one setup point, then show or hide a transparent loader overlay from anywhere in your app.
 
 ## Requirements
 
@@ -55,17 +55,80 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 For SwiftUI app lifecycle projects that still use UIKit screens, configure it from the root SwiftUI scene with `.loaderHost()` instead, or pass the active `UIWindowScene` to `loader.configure(windowScene:)` from your UIKit setup.
 
-## Showing And Hiding
+## Loader Methods
 
-Show and hide the loader from the main actor:
+Show the default simple loader:
 
 ```swift
 loader.show()
-loader.hide()
 ```
 
-You can also show a message:
+Show the simple loader with a message:
+
+```swift
+loader.show(
+    type: .simpleLoaderWithMessage,
+    message: "Please wait"
+)
+```
+
+For convenience, passing a message also chooses `.simpleLoaderWithMessage`:
 
 ```swift
 loader.show(message: "Please wait")
 ```
+
+Hide the loader:
+
+```swift
+loader.hide()
+```
+
+Customize the simple loader color in SwiftUI:
+
+```swift
+loader.show(
+    type: .simpleLoader,
+    loaderColor: .blue
+)
+```
+
+Customize the loader color and message color when showing a message:
+
+```swift
+loader.show(
+    type: .simpleLoaderWithMessage,
+    message: "Loading data...",
+    loaderColor: .blue,
+    messageColor: .gray
+)
+```
+
+UIKit projects can use `UIColor`:
+
+```swift
+loader.show(
+    type: .simpleLoaderWithMessage,
+    message: "Loading data...",
+    loaderUIColor: .systemBlue,
+    messageUIColor: .darkGray
+)
+```
+
+Available loader types:
+
+```swift
+.simpleLoader
+.simpleLoaderWithMessage
+```
+
+The default overlay background is transparent, so the loader appears above the current screen without dimming or covering the UI with a card background.
+
+## Xcode Previews
+
+`loader.show()` depends on runtime hosting:
+
+- SwiftUI apps need `.loaderHost()` installed in the active view hierarchy.
+- UIKit apps need an active `UIWindowScene` passed to `loader.configure(windowScene:)`.
+
+Because Xcode Previews do not always run with the same app scene/window lifecycle as the simulator or a real device, the global loader may not appear reliably in Preview. Test loader behavior on the iOS Simulator or a real iPhone/iPad for accurate results.

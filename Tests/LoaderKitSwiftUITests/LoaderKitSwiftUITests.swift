@@ -10,6 +10,7 @@ import Testing
     loader.show()
 
     #expect(loader.isPresented)
+    #expect(loader.selectedType == .simpleLoader)
     #expect(loader.message == nil)
 }
 
@@ -20,7 +21,18 @@ import Testing
     loader.show(message: "Please wait")
 
     #expect(loader.isPresented)
+    #expect(loader.selectedType == .simpleLoaderWithMessage)
     #expect(loader.message == "Please wait")
+}
+
+@MainActor
+@Test func showPresentsSelectedLoaderType() {
+    loader.hide()
+
+    loader.show(type: .simpleLoaderWithMessage)
+
+    #expect(loader.isPresented)
+    #expect(loader.selectedType == .simpleLoaderWithMessage)
 }
 
 @MainActor
@@ -30,6 +42,7 @@ import Testing
     loader.hide()
 
     #expect(!loader.isPresented)
+    #expect(loader.selectedType == .simpleLoader)
     #expect(loader.message == nil)
 }
 
